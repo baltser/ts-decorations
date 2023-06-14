@@ -63,7 +63,7 @@ declare type PropertyDecorator = (target: Object, propertyKey: string | symbol) 
 declare type MethodDecorator = <T> (target: Object, propertyKey: string | symbol, TypedPropertyDescriptor <T>) => TypedPropertyDescriptor <T> | void;
 declare type ParameterDecorator = (target: Object, propertyKey: string | symbol, parameterIndex: number) => void;
 ------------------------------------------------------------------*/
-//    Создание текораторов методов
+//    Создание декораторов методов
 function logTrade(target, key, descriptor) {
     const originalCode = descriptor.value;
     descriptor.value = function () {
@@ -74,6 +74,7 @@ function logTrade(target, key, descriptor) {
 }
 class Trade {
     placeOrder(stockName, quantity, operation, tradedID) {
+        //Здесь помещается реалиизация кода
     }
 }
 __decorate([
@@ -81,3 +82,83 @@ __decorate([
 ], Trade.prototype, "placeOrder", null);
 const trade = new Trade();
 trade.placeOrder('IBM', 100, 'Buy', 123);
+const worker = { name: 'John', age: 33 };
+function doStuff(person) {
+    person.age = 23;
+}
+doStuff(worker);
+/**
+ * Make all properties in T readonly
+ */
+// type Readonly<T> = {
+//     readonly [P in keyof T]: T[P];
+// };
+/**
+ * From T, pick a set of properties whose keys are in the union K
+ */
+// type Pick<T, K extends keyof T> = {
+//     [P in K]: T[P];
+// };
+//  Ущербная версия функции
+// function felterBy<T>(
+//     property: any,
+//     value: any,
+//     array: T[]
+// ) {
+//     return array.filter(item => item[property] === value);
+// }
+// Версия с ошибкой
+const persons = [
+    { name: 'John', age: 34 },
+    { name: 'Vas9', age: 23 }
+];
+function filterBy(property, value, array) {
+    return array.filter(item => item[property] === value);
+}
+console.log(filterBy('name', 'John', persons));
+console.log(filterBy('lastName', 'John', persons));
+console.log(filterBy('age', 'twenty', persons));
+// Улучшенная версия filterBy
+function filterByS(//Проверяет, что бы переданное свойсво P принадлежало объединению [keyof T]
+property, //Свойсво для фильтра
+value, //Значение для фильтра должно иметь тип переданного свойсва P
+array) {
+    return array.filter(item => item[property] === value);
+}
+const worker1 = { name: "John", age: 34 };
+worker1.age = 63; //error
+const worker2 = { name: "John", age: 34 };
+worker2.age = 74;
+// type Partial<T> = {               //lib.es5.d.ts
+//     [P in keyof T]?: T[P];
+// };
+const workerPartial = { name: "Anton" }; // workerPartial -- Error
+const workerPartial1 = { name: "Anton" };
+// type Required<T> = {                        //lib.es5.d.ts
+//     [P in keyof T]-?: T[P];
+// };
+const workerRequired = { name: "Anton" };
+const workerRequired1 = { name: "Anton" }; // workerRequired1 -- Error
+const workerCustom = { name: "Fros9" }; //инициализируется name, но age опциаональное
+workerCustom.name = "Mary"; //error (Readonly)
+// Условные типы
+class Product {
+}
+const getProducts = function (id) {
+    if (typeof id === 'number')
+        return { id: 123 };
+    else
+        return [{ id: 123 }, { id: 9393 }];
+};
+const result1 = getProducts(123); // Product
+const result2 = getProducts(); // Product[]
+// type Exclude<T, U> = T extends U ? never : T;              //lib.es5.d.ts
+class TvPerson {
+}
+class AsyncService {
+    getA() {
+        return Promise.resolve('');
+    }
+}
+let service = new AsyncService();
+let result = service.getA();
