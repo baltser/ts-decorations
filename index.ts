@@ -171,7 +171,7 @@ interface PersonCustom {
 const workerCustom: Readonly<Partial1<PersonCustom>> = { name: "Fros9" };  //инициализируется name, но age опциаональное
 workerCustom.name = "Mary";   //error (Readonly)
 
-// Еще один полезный тип - Pick
+// Еще один полезный тип - Pick   Предназначен сопоставленный тип Pick<T, K> для ограничения описания типа, на основе идентификаторов его членов. Простыми словами, у разработчиков и вывода типа, появилась возможность фильтровать тип по именам его членов.
 interface PersonPick {
     name: string;
     age: number;
